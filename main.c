@@ -3,7 +3,7 @@
 #include <sys/time.h>
 #include <afxres.h>
 
-#define TAM 100
+#define TAM 1000000
 
 
 void MinMax1(int *vet, int *min, int *max)
@@ -67,44 +67,61 @@ int isNULL(int* item){
     return 0;
 }
 
+int isIn(int* item,int* vet, int size){
+    for (int i = 0; i < size; i++) {
+        if (item == vet[i]){
+            return 1;
+        }
+    }
+    return 0;
+}
+
 
 int* shuffle(int* vet,int size){
-    int *shuffle_vet = calloc(size, sizeof(int));
+    int *shuffle_aux;
     int i = size;
     int random;
     while (i>0){
+        i--;
         random = rand()%(size+1);
-        if (isNULL(shuffle_vet[random])){
-            i--;
-            shuffle_vet[random] = vet[i];
-        }
+        shuffle_aux = vet[i];
+        vet[i] = vet[random];
+        vet[random] = shuffle_aux;
     }
-    return shuffle_vet;
+    return vet;
 }
 
-long long timeInMilliseconds(void) {
-    struct timeval tv;
-
-    gettimeofday(&tv,NULL);
-    return (((long long)tv.tv_sec)*1000)+(tv.tv_usec/1000);
-}
 int main() {
 
     srand(time(NULL));
     int* vet = shuffle(makeSequence(TAM),TAM);
 
-    for (int i = 0; i < TAM; ++i) {
+    for (int i = 0; i < TAM; i++) {
         printf("%i : %i\n", i, vet[i]);
     }
     int* min = calloc(1, sizeof(int));
     int* max = calloc(1, sizeof(int));
-    printf("%llo: time",timeInMilliseconds());
+
+    clock_t time_begin,time_end,time_total;
+
+    time_begin = clock();
     MinMax1(vet, min, max);
-    printf("%llo: time",timeInMilliseconds());
+    time_end = clock();
+    time_total = (double)(time_end - time_begin);
+    printf("tempo total pelo clock: %d\n",time_total);
+
+    time_begin = clock();
     MinMax2(vet, min, max);
-    printf("%llo: time",timeInMilliseconds());
+    time_end = clock();
+    time_total = (double)(time_end - time_begin);
+    printf("tempo total pelo clock: %d\n",time_total);
+
+    time_begin = clock();
     MinMax3(vet, min, max);
-    printf("%llo: time",timeInMilliseconds());
+    time_end = clock();
+    time_total = (double)(time_end - time_begin);
+    printf("tempo total pelo clock: %d\n",time_total);
+
     printf("\n%i", 0);
 
 
