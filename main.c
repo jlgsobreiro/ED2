@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <dos.h>
 #include <afxres.h>
 
-#define TAM 1000000
+#define TAM 200000000
 
 
 void MinMax1(int *vet, int *min, int *max)
@@ -93,34 +94,51 @@ int* shuffle(int* vet,int size){
 
 int main() {
 
+
+    __int64 freq,start,stop;
+
+    double tempo;
+
+
     srand(time(NULL));
+    QueryPerformanceFrequency((LARGE_INTEGER *)&freq);
+    QueryPerformanceCounter((LARGE_INTEGER *)&start);
+
     int* vet = shuffle(makeSequence(TAM),TAM);
 
-    for (int i = 0; i < TAM; i++) {
-        printf("%i : %i\n", i, vet[i]);
-    }
+    QueryPerformanceCounter((LARGE_INTEGER *)&stop);
+    tempo = ((double)stop-(double)start) / (double)CLOCKS_PER_SEC;
+    printf("tempo total em milisegundos: %f \n",tempo/10000);
+
     int* min = calloc(1, sizeof(int));
     int* max = calloc(1, sizeof(int));
 
-    clock_t time_begin,time_end,time_total;
+    QueryPerformanceFrequency((LARGE_INTEGER *)&freq);
+    QueryPerformanceCounter((LARGE_INTEGER *)&start);
 
-    time_begin = clock();
     MinMax1(vet, min, max);
-    time_end = clock();
-    time_total = (double)(time_end - time_begin);
-    printf("tempo total pelo clock: %d\n",time_total);
 
-    time_begin = clock();
+    QueryPerformanceCounter((LARGE_INTEGER *)&stop);
+    tempo = ((double)stop-(double)start) / (double)CLOCKS_PER_SEC;
+    printf("tempo total em milisegundos: %f \n",tempo/10000);
+
+    QueryPerformanceFrequency((LARGE_INTEGER *)&freq);
+    QueryPerformanceCounter((LARGE_INTEGER *)&start);
+
     MinMax2(vet, min, max);
-    time_end = clock();
-    time_total = (double)(time_end - time_begin);
-    printf("tempo total pelo clock: %d\n",time_total);
 
-    time_begin = clock();
+    QueryPerformanceCounter((LARGE_INTEGER *)&stop);
+    tempo = ((double)stop-(double)start) / (double)CLOCKS_PER_SEC;
+    printf("tempo total em milisegundos: %f \n",tempo/10000);
+
+    QueryPerformanceFrequency((LARGE_INTEGER *)&freq);
+    QueryPerformanceCounter((LARGE_INTEGER *)&start);
+
     MinMax3(vet, min, max);
-    time_end = clock();
-    time_total = (double)(time_end - time_begin);
-    printf("tempo total pelo clock: %d\n",time_total);
+
+    QueryPerformanceCounter((LARGE_INTEGER *)&stop);
+    tempo = ((double)stop-(double)start) / (double)CLOCKS_PER_SEC;
+    printf("tempo total em segundos: %f \n",tempo/10000);
 
     printf("\n%i", 0);
 
